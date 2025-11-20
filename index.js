@@ -1,11 +1,36 @@
-
+ 
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
 app.use(express.json())
 
+
+// app.use(morgan('tiny'))
+//Morgan token looking for POST method and returning a JSON'd body
+morgan.token('post', function (tokens,req,res) {
+    if(tokens.method(req,res) === 'POST'){
+        return JSON.stringify(req.body)
+    }
+})
+
+// Morgan middleware using custom configuration
+app.use(morgan(function (tokens,req,res) {
+    return[
+        tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        tokens.res(req, res, 'content-length'), '-',
+        tokens['response-time'](req, res), 'ms',
+        // custom token being called
+        tokens.post(tokens,req,res)
+    ].join(' ')
+}))
+
+
+
+
 let dateTime = new Date();
-
-
 
 let persons = [
 
@@ -97,10 +122,6 @@ app.post('/api/persons', (request,response) => {
     response.json(person)
 
 })
-
-
-
-
 
 
 
