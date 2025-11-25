@@ -2,8 +2,10 @@
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const cors = require('cors')
 
 app.use(express.json())
+
 
 
 // app.use(morgan('tiny'))
@@ -26,6 +28,8 @@ app.use(morgan(function (tokens,req,res) {
         tokens.post(tokens,req,res)
     ].join(' ')
 }))
+
+app.use(cors())
 
 
 
