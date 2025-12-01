@@ -1,8 +1,9 @@
- 
+ require('dotenv').config();
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
+const Person = require('./models/person')
 
 app.use(express.json())
 app.use(express.static('dist'))
@@ -30,36 +31,36 @@ app.use(morgan(function (tokens,req,res) {
     ].join(' ')
 }))
 
-app.use(cors())
+app.use(cors());
 
 
 
 
 let dateTime = new Date();
 
-let persons = [
+// let persons = [
 
-    {
-        "id": "1",
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": "2",
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": "3",
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": "4",
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    }
-]
+//     {
+//         "id": "1",
+//         "name": "Arto Hellas",
+//         "number": "040-123456"
+//     },
+//     {
+//         "id": "2",
+//         "name": "Ada Lovelace",
+//         "number": "39-44-5323523"
+//     },
+//     {
+//         "id": "3",
+//         "name": "Dan Abramov",
+//         "number": "12-43-234345"
+//     },
+//     {
+//         "id": "4",
+//         "name": "Mary Poppendieck",
+//         "number": "39-23-6423122"
+//     }
+// ]
 
 
 function getRandomID() {
@@ -68,10 +69,17 @@ function getRandomID() {
 return Math.floor(Math.random() * (max-min)) + min;
 }
 
-//GET all
+//GET all database
 app.get("/api/persons", (request,response) => {
-    response.json(persons);
+    Person.find({}).then(persons => {
+        response.json(persons);
+    })
 })
+
+//GET all
+// app.get("/api/persons", (request,response) => {
+//     response.json(persons);
+// })
 //GET info page
 app.get("/info", (request,response) => {
     
