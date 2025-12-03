@@ -76,13 +76,6 @@ app.delete('/api/persons/:id', (request,response,next) => {
 //POST
 app.post('/api/persons', (request,response,next) => {
     const body = request.body
-    // const personFound = persons.find((e) => e.name == body.name)
-
-    // if(personFound){
-    //     return response.status(400).json({
-    //         error: 'Name must be unique'
-    //     })
-    // }
 
     if(!body.name) {
         return response.status(400).json({
@@ -113,7 +106,7 @@ app.put('/api/persons/:id', (request,response,next) => {
     Person.findById(request.params.id)
     .then(person => {
         if(!person){
-            response.status(404).end();
+           return response.status(404).end();
         }
 
         person.name = name
@@ -137,7 +130,9 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
-    }
+    }else if (error.name === 'ValidationError') {
+        return response.status(400).json({error: error.message})
+    } 
 
     next(error)
 }
